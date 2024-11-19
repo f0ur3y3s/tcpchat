@@ -1,0 +1,111 @@
+{%extends "base.html"%}
+
+{%block content%}
+<style>
+    body {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    #sidebar {
+        width: 300px;
+        background-color: #f8f9fa;
+        border-right: 1px solid #dee2e6;
+    }
+
+    #chat-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        background-color: #f1f1f1;
+    }
+</style>
+
+<body>
+    <!-- <div id="sidebar" class="d-flex flex-column">
+        <div class="p-3 border-bottom">
+            <h5>Users</h5>
+            <ul class="list-group">
+                <li class="list-group-item">User 1</li>
+                <li class="list-group-item">User 2</li>
+                <li class="list-group-item">User 3</li>
+            </ul>
+        </div>
+        <div class="p-3">
+            <h5>Files</h5>
+            <ul class="list-group">
+                <li class="list-group-item">File 1</li>
+                <li class="list-group-item">File 2</li>
+                <li class="list-group-item">File 3</li>
+            </ul>
+        </div>
+    </div> -->
+    <!-- <div id="chat-area">
+        <div class="container h-100">
+            <div id="messages" class="p-3">
+                <div><strong>User 1:</strong> Hello!</div>
+                <div><strong>User 2:</strong> Hi there!</div>
+                <div><strong>User 3:</strong> Good morning!</div>
+            </div>
+        </div>
+        <div class="border-top" style="background-color: #f1f1f1;">
+            <div class="container">
+                <div id="" class="p-3">
+                    <form class="d-flex">
+                        <input type="text" class="form-control me-2" placeholder="Type a message" id="message-input">
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <div id="chat-area">
+        <div class="container h-100">
+            <div id="messages" class="p-3">
+                <!-- Messages will appear here -->
+            </div>
+        </div>
+        <div class="border-top" style="background-color: #f1f1f1;">
+            <div class="container">
+                <div class="p-3">
+                    <form id="message-form" class="d-flex">
+                        <input type="text" id="message-input" class="form-control me-2" placeholder="Type a message">
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Establish a connection to the message stream
+        const eventSource = new EventSource('/stream');
+        eventSource.onmessage = function (event) {
+            const newMessage = document.createElement('div');
+            newMessage.textContent = event.data;
+            $('#messages').append(newMessage);
+        };
+        // Handle form submission
+        $(document).ready(function () {
+            $('#message-form').submit(function (event) {
+                event.preventDefault();
+                const message = $('#message-input').val();
+                if (message.trim() !== '') {
+                    $.post('/send', { message: message }, function () {
+                        $('#message-input').val('');
+                    });
+                }
+            });
+
+
+        });
+    </script>
+
+</body>
+{%endblock%}

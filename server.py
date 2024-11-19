@@ -21,11 +21,12 @@ def handle_client(client_socket: socket.socket, address):
 
 def broadcast(message, sender_socket):
     for client in clients:
-        if client != sender_socket:
-            try:
-                client.send(message)
-            except:
-                pass
+        client.send(message)
+        # if client != sender_socket:
+        #     try:
+        #         client.send(message)
+        #     except:
+        #         pass
 
 
 def main():
@@ -33,6 +34,7 @@ def main():
     server.bind(("0.0.0.0", 1337))
     server.listen(5)
     print("Server started on port 1337.")
+
     while True:
         client_socket, address = server.accept()
         clients.append(client_socket)
